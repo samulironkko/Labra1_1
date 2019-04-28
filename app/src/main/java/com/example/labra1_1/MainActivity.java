@@ -74,15 +74,7 @@ public class MainActivity extends AppCompatActivity {
         LocationListener locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-                Geocoder geocoder = new Geocoder(MainActivity.this, Locale.getDefault());
-                try {
-                    List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-                    Address address = addresses.get(0);
-                    addressTextView.setText(address.getLocality() + "\n" + address.getCountryName());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                textView.setText(String.valueOf(location.getLatitude() + ", " + String.valueOf(location.getLongitude())));
+                updateLocation(location);
             }
 
             @Override
@@ -101,7 +93,20 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
+        updateLocation(locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER));
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+    }
+
+    public void updateLocation(Location location) {
+        Geocoder geocoder = new Geocoder(MainActivity.this, Locale.getDefault());
+        try {
+            List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+            Address address = addresses.get(0);
+            addressTextView.setText(address.getLocality() + "\n" + address.getCountryName());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        textView.setText(String.valueOf(location.getLatitude() + ", " + String.valueOf(location.getLongitude())));
     }
 
 
